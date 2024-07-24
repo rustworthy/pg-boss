@@ -1,6 +1,6 @@
 const assert = require('assert')
 const helper = require('./testHelper')
-const delay = require('delay')
+const { setTimeout: delay } = require('node:timers/promises')
 
 describe('deleteQueue', function () {
   it('should clear a specific queue', async function () {

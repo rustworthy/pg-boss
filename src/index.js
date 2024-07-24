@@ -6,7 +6,7 @@ const Manager = require('./manager')
 const Timekeeper = require('./timekeeper')
 const Boss = require('./boss')
 const Db = require('./db')
-const delay = require('delay')
+const { setTimeout: delay } = require('node:timers/promises')
 
 const events = {
   error: 'error',

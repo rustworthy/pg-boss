@@ -7,20 +7,19 @@
     "node": ">=16"
   },
   "dependencies": {
-    "cron-parser": "^4.0.0",
-    "delay": "^5.0.0",
+    "cron-parser": "^4.9.0",
     "lodash.debounce": "^4.0.8",
     "p-map": "^4.0.0",
-    "pg": "^8.5.1",
+    "pg": "^8.12.0",
     "serialize-error": "^8.1.0",
-    "uuid": "^9.0.0"
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.3.3",
-    "luxon": "^3.0.1",
-    "mocha": "^10.0.0",
-    "nyc": "^15.1.0",
-    "standard": "^17.0.0"
+    "@types/node": "^20.14.12",
+    "luxon": "^3.4.4",
+    "mocha": "^10.7.0",
+    "nyc": "^17.0.0",
+    "standard": "^17.1.0"
   },
   "scripts": {
     "test": "standard && mocha",

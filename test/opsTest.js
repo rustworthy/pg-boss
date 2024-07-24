@@ -1,7 +1,7 @@
 const assert = require('assert')
 const helper = require('./testHelper')
 const { v4: uuid } = require('uuid')
-const delay = require('delay')
+const { setTimeout: delay } = require('node:timers/promises')
 
 describe('ops', function () {
   const defaults = {

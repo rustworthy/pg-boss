@@ -1,6 +1,6 @@
 const assert = require('assert')
 const EventEmitter = require('events')
-const delay = require('delay')
+const { setTimeout: delay } = require('node:timers/promises')
 const uuid = require('uuid')
 const debounce = require('lodash.debounce')
 const { serializeError: stringify } = require('serialize-error')

@@ -1,4 +1,4 @@
-const delay = require('delay')
+const { setTimeout: delay } = require('node:timers/promises')
 const assert = require('assert')
 const { DateTime } = require('luxon')
 const helper = require('./testHelper')

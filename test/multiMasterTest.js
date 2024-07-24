@@ -1,5 +1,5 @@
 const assert = require('assert')
-const delay = require('delay')
+const { setTimeout: delay } = require('node:timers/promises')
 const helper = require('./testHelper')
 const PgBoss = require('../')
 const Contractor = require('../src/contractor')

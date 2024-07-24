@@ -1,6 +1,6 @@
 const assert = require('assert')
 const PgBoss = require('../')
-const delay = require('delay')
+const { setTimeout: delay } = require('node:timers/promises')
 
 describe('background processing error handling', function () {
   it('maintenance error handling works', async function () {
