@@ -28,7 +28,8 @@
     "export-migration": "node ./scripts/migrate.js",
     "export-rollback": "node ./scripts/rollback.js",
     "tsc": "tsc --noEmit types.d.ts",
-    "readme": "node ./test/readme.js"
+    "readme": "node ./test/readme.js",
+    "fmt": "standard --fix"
   },
   "mocha": {
     "timeout": 10000,

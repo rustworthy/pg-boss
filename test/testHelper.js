@@ -1,9 +1,9 @@
-const Db = require("../src/db");
-const PgBoss = require("../");
-const plans = require("../src/plans");
-const { COMPLETION_JOB_PREFIX } = plans;
-const crypto = require("crypto");
-const sha1 = (value) => crypto.createHash("sha1").update(value).digest("hex");
+const Db = require('../src/db')
+const PgBoss = require('../')
+const plans = require('../src/plans')
+const { COMPLETION_JOB_PREFIX } = plans
+const crypto = require('crypto')
+const sha1 = (value) => crypto.createHash('sha1').update(value).digest('hex')
 
 module.exports = {
   dropSchema,
@@ -17,131 +17,131 @@ module.exports = {
   getConfig,
   getConnectionString,
   tryCreateDb,
-  init,
-};
-
-function getConnectionString() {
-  const config = getConfig();
-
-  return `postgres://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`;
+  init
 }
 
-function getConfig(options = {}) {
-  const config = require("./config.json");
+function getConnectionString () {
+  const config = getConfig()
 
-  config.host = process.env.POSTGRES_HOST || config.host;
-  config.port = process.env.POSTGRES_PORT || config.port;
-  config.password = process.env.POSTGRES_PASSWORD || config.password;
+  return `postgres://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`
+}
+
+function getConfig (options = {}) {
+  const config = require('./config.json')
+
+  config.host = process.env.POSTGRES_HOST || config.host
+  config.port = process.env.POSTGRES_PORT || config.port
+  config.password = process.env.POSTGRES_PASSWORD || config.password
 
   if (options.testKey) {
-    config.schema = `pgboss${sha1(options.testKey).slice(-10)}`;
+    config.schema = `pgboss${sha1(options.testKey).slice(-10)}`
   }
 
-  config.schema = config.schema || "pgboss";
+  config.schema = config.schema || 'pgboss'
 
-  const result = { ...config };
+  const result = { ...config }
 
-  return Object.assign(result, options);
+  return Object.assign(result, options)
 }
 
-async function init() {
-  const { database } = getConfig();
+async function init () {
+  const { database } = getConfig()
 
-  await tryCreateDb(database);
-  await tryCreatePgCrypto(database);
+  await tryCreateDb(database)
+  await tryCreatePgCrypto(database)
 }
 
-async function getDb(database) {
-  const config = getConfig();
+async function getDb (database) {
+  const config = getConfig()
 
-  config.database = database || config.database;
+  config.database = database || config.database
 
-  const db = new Db(config);
+  const db = new Db(config)
 
-  await db.open();
+  await db.open()
 
-  return db;
+  return db
 }
 
-async function tryCreatePgCrypto(database) {
-  const db = await getDb(database);
+async function tryCreatePgCrypto (database) {
+  const db = await getDb(database)
   try {
-    await db.executeSql("CREATE EXTENSION IF NOT EXISTS pgcrypto");
+    await db.executeSql('CREATE EXTENSION IF NOT EXISTS pgcrypto')
   } catch {
   } finally {
-    await db.close();
+    await db.close()
   }
 }
 
-async function dropSchema(schema) {
-  const db = await getDb();
-  await db.executeSql(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);
-  await db.close();
+async function dropSchema (schema) {
+  const db = await getDb()
+  await db.executeSql(`DROP SCHEMA IF EXISTS ${schema} CASCADE`)
+  await db.close()
 }
 
-async function findJobs(schema, where, values) {
-  const db = await getDb();
+async function findJobs (schema, where, values) {
+  const db = await getDb()
   const jobs = await db.executeSql(
     `select * from ${schema}.job where ${where}`,
     values
-  );
-  await db.close();
-  return jobs;
+  )
+  await db.close()
+  return jobs
 }
 
-async function getArchivedJobById(schema, id) {
-  const response = await findArchivedJobs(schema, "id = $1", [id]);
-  return response.rows.length ? response.rows[0] : null;
+async function getArchivedJobById (schema, id) {
+  const response = await findArchivedJobs(schema, 'id = $1', [id])
+  return response.rows.length ? response.rows[0] : null
 }
 
-async function findArchivedJobs(schema, where, values) {
-  const db = await getDb();
+async function findArchivedJobs (schema, where, values) {
+  const db = await getDb()
   const result = await db.executeSql(
     `select * from ${schema}.archive where ${where}`,
     values
-  );
-  await db.close();
-  return result;
+  )
+  await db.close()
+  return result
 }
 
-async function countJobs(schema, where, values) {
-  const db = await getDb();
+async function countJobs (schema, where, values) {
+  const db = await getDb()
   const result = await db.executeSql(
     `select count(*) as count from ${schema}.job where ${where}`,
     values
-  );
-  await db.close();
-  return parseFloat(result.rows[0].count);
+  )
+  await db.close()
+  return parseFloat(result.rows[0].count)
 }
 
-async function tryCreateDb(database) {
-  const db = await getDb("postgres");
+async function tryCreateDb (database) {
+  const db = await getDb('postgres')
 
   try {
-    await db.executeSql(`CREATE DATABASE ${database}`);
+    await db.executeSql(`CREATE DATABASE ${database}`)
   } catch {
   } finally {
-    await db.close();
+    await db.close()
   }
 }
 
-async function start(options) {
+async function start (options) {
   try {
-    options = getConfig(options);
-    const boss = new PgBoss(options);
-    boss.on("error", (err) =>
+    options = getConfig(options)
+    const boss = new PgBoss(options)
+    boss.on('error', (err) =>
       console.log({ schema: options.schema, message: err.message })
-    );
-    await boss.start();
-    return boss;
+    )
+    await boss.start()
+    return boss
   } catch (err) {
     // this is nice for occaisional debugging, Mr. Linter
     if (err) {
-      throw err;
+      throw err
     }
   }
 }
 
-async function stop(boss, timeout = 4000) {
-  await boss.stop({ timeout });
+async function stop (boss, timeout = 4000) {
+  await boss.stop({ timeout })
 }
