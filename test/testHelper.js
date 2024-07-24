@@ -48,7 +48,7 @@ async function init () {
   const { database } = getConfig()
 
   await tryCreateDb(database)
-  await createPgCrypto(database)
+  await tryCreatePgCrypto(database)
 }
 
 async function getDb (database) {
@@ -63,10 +63,14 @@ async function getDb (database) {
   return db
 }
 
-async function createPgCrypto (database) {
+async function tryCreatePgCrypto (database) {
   const db = await getDb(database)
-  await db.executeSql('create extension if not exists pgcrypto')
-  await db.close()
+  try {
+    await db.executeSql('CREATE EXTENSION IF NOT EXISTS pgcrypto')
+  } catch {
+  } finally {
+    await db.close()
+  }
 }
 
 async function dropSchema (schema) {
